@@ -1,0 +1,83 @@
+---
+title: "Nube De Palabras"
+author: "Yanina"
+date: "10/12/2020"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+
+# Cargar las librerías necesarias
+library(__________) #Para usar dplyr
+library(__________) #Para usar tidytext
+library(wordcloud2)
+library(tm)
+library(readr)
+```
+
+## Nube de Palabras
+
+Tenemos en el archivo `rladies_meetup.csv` los títulos de los eventos de R-Ladies en todo el mundo desde 2012 a 2019.
+
+**Objetivo:** generar una nube de palabras con los términos más importantes.
+
+EL primer paso es leer el archivo que tiene todos los titulos de meetups de r-ladies. **Completen este código para que se lea el archivo "rladies_meetups.csv"**
+
+```{r}
+titulos <- ________("rladies_meetups.csv")
+
+```
+
+Ahora necesitamos filtrar **stop words** en varios idiomas (porque no solo hay capítulos en Español).
+
+1. _Ejecuten este código tal cual se presenta._ 
+
+```{r}
+idiomas <- list('spanish', 'portuguese', 'french', 'danish', 'dutch', 'finnish', 'german', 'hungarian', 'italian', 'norwegian', 'russian', 'swedish')
+
+variosIdiomas_stop_words <- idiomas %>% 
+  map(tm::stopwords) %>%
+  flatten_dfc() %>% 
+  gather(var, word) %>%
+  bind_rows(stop_words) %>%
+  select(word, lexicon)
+
+```
+
+Ahora tenemos que obtener solo palabras, asi que vamos a :
+
+1. tokenizar, 
+2. hacer un _anti_join_ con _variosIdiomas_stop_words_
+3. contar la cantidad de palabras
+4. filtar aquellas palabras que tengan menos de 10 ocurrencias
+
+Completa el código para poder obtener el conjunto de datos `palabras` para luego realizar la nube de palabras. 
+
+  
+```{r}
+palabras <- titulos %>%
+  _____________(word, titulo) %>%
+  _____________(variosIdiomas_stop_words) %>%
+  count(word) %>%
+  _____________(n>10)
+
+
+```
+
+Agregamos el código para visualizar el set de datos, las primeras 15 filas.
+
+```{r}
+________(palabras, n=________)
+
+```
+
+
+Con las palabras finales seleccionadas armamos una nube de palabras. Completa el código para poder obtener una nube de palabras. Aquí si queremos que se muestre el resultado.
+
+```{r}
+___________ (__________ , size = 1, minRotation = -pi/6, maxRotation = -pi/6,
+                  color = "random-light", backgroundColor = "grey")
+
+```
+
